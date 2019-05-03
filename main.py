@@ -5,7 +5,6 @@ import io
 import sys
 import requests
 import tweepy
-import json
 import utils
 
 """ order of keys
@@ -23,4 +22,14 @@ print("Beep! Twitterbot started.")
 
 tokens = utils.readauthfile(sys.argv[1])
 
-print(tokens)
+consumer_key = tokens[0]; consumer_token = tokens[1]
+access_token = tokens[2]; access_token_secret = tokens[3]
+
+auth = tweepy.OAuthHandler(consumer_key, consumer_token)
+auth.set_access_token(access_token, access_token_secret)
+
+api = tweepy.API(auth)
+api.update_status('Beep! Bot update #1')
+
+print("Done")
+
