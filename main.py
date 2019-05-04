@@ -29,7 +29,7 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_token)
 auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
-api.update_status('Beep! Bot update #1')
+#api.update_status('Beep! Bot update #1')
 
 print("Done")
 
