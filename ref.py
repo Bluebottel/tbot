@@ -30,3 +30,10 @@ time.sleep(20)
 
 sauce:
 https://medium.com/datadriveninvestor/how-i-created-a-twitter-bot-using-python-a68b917d133
+
+
+---
+
+twitterstuff
+
+image size limit: 5MB
