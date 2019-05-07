@@ -1,8 +1,10 @@
 #twitter bot
 
+import os
 import sys
 import tweepy
 import utils
+import random
 
 if not len(sys.argv) == 2:
     print("Usage: python3 " + sys.argv[0] + " authfile.txt")
@@ -28,8 +30,7 @@ listener.setApi(api)
 stream = tweepy.Stream(auth, listener)
 
 # this is blocking and starts the actual listening
-#stream.filter(track=["@wasdmuraibot"])
-
+stream.filter(track=["@wasdmurai"])
 
 
 print("Done")

@@ -1,6 +1,8 @@
 import tweepy
 import io
 import json
+import os
+import random
 
 def readauthfile(filename):
     """ order of keys
@@ -30,14 +32,16 @@ class StreamListener(tweepy.StreamListener):
     def on_data(self, data):
         data = json.loads(data)
 
-        #m = "@username textmessage"
-        #t = api.update_status(status=m,
-        # in_reply_to_status_id=tweet.id)
-        
-        print("data: " + data["text"])
+        #make a list so we can the size for upper limit random
+        img = os.listdir("./images")
+        img = "./images/" + img[random.randint(0, len(img))]
 
-        self.api.update_status("Reply to " + \
-                          data["user"]["screen_name"])
+        message = "@" + data["user"]["screen_name"] \
+            + " Have a random animal! Beep " \
+            + str(random.randint(1e6, 2e6))
+        replyid = data["id_str"]
+        
+        self.api.update_with_media(img, message, replyid)
 
     def on_error(self, status):
         print("Error: " + str(status))
