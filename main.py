@@ -6,8 +6,10 @@ import tweepy
 import utils
 import random
 
-if not len(sys.argv) == 2:
-    print("Usage: python3 " + sys.argv[0] + " authfile.txt")
+ACCOUNT_USERNAME = "wasdmurai"
+
+if not len(sys.argv) == 3:
+    print("Usage: python3 " + sys.argv[0] + " authfile.txt @username")
     quit()
 
 print("Beep! Twitterbot started.")
@@ -23,14 +25,14 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 #api.update_status('Beep! Bot update #1')
 
-
 listener = utils.StreamListener()
 listener.setApi(api)
+listener.setAccountName(ACCOUNT_USERNAME)
 
 stream = tweepy.Stream(auth, listener)
 
 # this is blocking and starts the actual listening
-stream.filter(track=["@wasdmurai"])
+stream.filter(track=[sys.argv[2]])
 
 
 print("Done")

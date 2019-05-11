@@ -25,14 +25,18 @@ def readauthfile(filename):
 class StreamListener(tweepy.StreamListener):
 
     api = None
+    accountname = None
     
     def setApi(self, api):
         self.api = api
+
+    def setAccountName(self, name):
+        self.accountname = name
         
     def on_data(self, data):
         data = json.loads(data)
 
-        #make a list so we can the size for upper limit random
+        # make a list so we can the size for upper limit random
         img = os.listdir("./images")
         img = "./images/" + img[random.randint(0, len(img))]
 
@@ -40,8 +44,12 @@ class StreamListener(tweepy.StreamListener):
             + " Have a random animal! Beep " \
             + str(random.randint(1e6, 2e6))
         replyid = data["id_str"]
-        
-        self.api.update_with_media(img, message, replyid)
+
+        # replying to ourselves causes infinite posting loops
+        if data["user"]["screen_name"] != self.accountname:
+            self.api.update_with_media(img, message, replyid)
+
+        else: print("Loop guard!")
 
     def on_error(self, status):
         print("Error: " + str(status))
