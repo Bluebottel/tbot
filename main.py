@@ -6,15 +6,14 @@ import tweepy
 import utils
 import random
 
-ACCOUNT_USERNAME = "wasdmurai"
-
-if not len(sys.argv) == 3:
+if not len(sys.argv) == 3 or sys.argv[2][0] != "@":
     print("Usage: python3 " + sys.argv[0] + " authfile.txt @username")
     quit()
 
 print("Beep! Twitterbot started.")
 
 tokens = utils.readauthfile(sys.argv[1])
+accountname = sys.argv[2]
 
 consumer_key = tokens[0]; consumer_token = tokens[1]
 access_token = tokens[2]; access_token_secret = tokens[3]
@@ -27,7 +26,7 @@ api = tweepy.API(auth)
 
 listener = utils.StreamListener()
 listener.setApi(api)
-listener.setAccountName(ACCOUNT_USERNAME)
+listener.setAccountName(accountname)
 
 stream = tweepy.Stream(auth, listener)
 

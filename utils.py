@@ -3,6 +3,11 @@ import io
 import json
 import os
 import random
+import time
+import datetime
+
+SLEEP_TIME_RATE = 60 * 5
+SLEEP_TIME_SERVERS = 30
 
 def readauthfile(filename):
     """ order of keys
@@ -24,8 +29,7 @@ def readauthfile(filename):
 
 class StreamListener(tweepy.StreamListener):
 
-    api = None
-    accountname = None
+    api = None; accountname = None; time = None
     
     def setApi(self, api):
         self.api = api
@@ -35,21 +39,34 @@ class StreamListener(tweepy.StreamListener):
         
     def on_data(self, data):
         data = json.loads(data)
-
-        # make a list so we can the size for upper limit random
-        img = os.listdir("./images")
+        
+        img = os.listdir("./images")        
         img = "./images/" + img[random.randint(0, len(img))]
-
+        
         message = "@" + data["user"]["screen_name"] \
             + " Have a random animal! Beep " \
             + str(random.randint(1e6, 2e6))
         replyid = data["id_str"]
-
+        
         # replying to ourselves causes infinite posting loops
         if data["user"]["screen_name"] != self.accountname:
             self.api.update_with_media(img, message, replyid)
 
-        else: print("Loop guard!")
-
     def on_error(self, status):
-        print("Error: " + str(status))
+        #print("Error: " + str(status))
+
+        # unauthorized error
+        if status == 401:
+            print("Error 401 (unauthorized). Possibly broken keys")
+            quit()
+
+        # getting rate limited so pause posting
+        if status == 420 or 429:
+            time.sleep(SLEEP_TIME_RATE)
+
+        # gateway timeout or internal server error
+        # the servers are up but try again later
+        if status == 504 or status == 500:
+            time.sleep(SLEEP_TIME_SERVERS)
+
+        
