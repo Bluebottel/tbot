@@ -22,7 +22,6 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_token)
 auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
-#api.update_status('Beep! Bot update #1')
 
 listener = utils.StreamListener()
 listener.setApi(api)
@@ -33,5 +32,7 @@ stream = tweepy.Stream(auth, listener)
 # this is blocking and starts the actual listening
 stream.filter(track=[sys.argv[2]])
 
+# TODO: handle read timeouts exception when connection breaks(?)
+# google fu: read timeout tweepy
 
 print("Done")

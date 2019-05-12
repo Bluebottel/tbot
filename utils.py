@@ -26,6 +26,10 @@ def readauthfile(filename):
 
     return tokens
 
+def findkeywords(message):
+    words = []
+
+    
 
 class StreamListener(tweepy.StreamListener):
 
@@ -53,7 +57,6 @@ class StreamListener(tweepy.StreamListener):
             self.api.update_with_media(img, message, replyid)
 
     def on_error(self, status):
-        #print("Error: " + str(status))
 
         # unauthorized error
         if status == 401:
@@ -61,12 +64,14 @@ class StreamListener(tweepy.StreamListener):
             quit()
 
         # getting rate limited so pause posting
-        if status == 420 or 429:
+        elif status == 420 or 429:
             time.sleep(SLEEP_TIME_RATE)
 
         # gateway timeout or internal server error
         # the servers are up but try again later
-        if status == 504 or status == 500:
+        elif status == 504 or status == 500:
             time.sleep(SLEEP_TIME_SERVERS)
 
-        
+        else:
+            print("Error: %s", status)
+            quit()
