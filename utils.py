@@ -4,10 +4,12 @@ import json
 import os
 import random
 import time
-import datetime
+from datetime import datetime
+import re
 
 SLEEP_TIME_RATE = 60 * 5
 SLEEP_TIME_SERVERS = 30
+KEYWORDS_FILE = "keywords.json"
 
 def readauthfile(filename):
     """ order of keys
@@ -18,22 +20,71 @@ def readauthfile(filename):
     """
     tokens = []
 
-    file = io.open(filename, mode="r", encoding="utf-8")
-
-    for line in file:
-        # chop off the newline
-        tokens.append(line[:-1])
+    with open(filename, mode="r", encoding="utf-8") as file:
+        for line in file:
+            # chop off the newline and += doesn't work here
+            tokens.append(line[:-1])
 
     return tokens
 
-def findkeywords(message):
-    words = []
+def scrubmessage(message):
 
+    # strip out all non alphabetical characters and spaces
+    message = re.sub('[^A-Za-z ]', '', message)
+
+    # make it lowercase
+    message = message.lower()
+
+    # split into words
+    message = message.split(" ")
+    return message    
+
+def extractkeywords(message):
+    keywords = getkeywords(); found = []
+    message = scrubmessage(message)
+
+    for word in message:
+        if word in keywords:
+            found.append(word)
+
+        # also check for the singular version of the word (pups -> pup)
+        elif word[:-1] in keywords:
+            found.append(word[:-1])
+
+    return found
+
+# reads from a file since dbless branch, JSON formatted
+def getkeywords():
+    ret = ""
+
+    try:
+        with open(KEYWORDS_FILE, "r", encoding="utf-8") as file:
+            for line in file:
+                ret += line[:-1]
+    except OSError as wrongfile:
+        print("Error opening file " + KEYWORDS_FILE)
+        return None
+
+    try:
+        # make it a pythonised list
+        ret = json.loads(ret)
+    except:
+        print("Broken JSON in " + KEYWORDS_FILE)
+        return None
+
+    # the values are the keywords
+    allwords = []
+    for keys, value in ret.items():
+        for tag in value:
+            if tag not in allwords:
+                allwords.append(tag)
+
+    return allwords
     
 
 class StreamListener(tweepy.StreamListener):
 
-    api = None; accountname = None; time = None
+    api = None; accountname = None;
     
     def setApi(self, api):
         self.api = api
@@ -46,13 +97,22 @@ class StreamListener(tweepy.StreamListener):
         
         img = os.listdir("./images")        
         img = "./images/" + img[random.randint(0, len(img))]
-        
+
+        """" TODO
         message = "@" + data["user"]["screen_name"] \
             + " Have a random animal! Beep " \
             + str(random.randint(1e6, 2e6))
         replyid = data["id_str"]
+        """
+
+        keywords = getkeywords(data["text"])
+
+        if (keywords != None or keywords != []):
+            pass #TODO
         
-        # replying to ourselves causes infinite posting loops
+        
+        # replying to ourselves causes an infinite posting loop
+        # this will get you banned from twitter
         if data["user"]["screen_name"] != self.accountname:
             self.api.update_with_media(img, message, replyid)
 

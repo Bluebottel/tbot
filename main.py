@@ -5,6 +5,7 @@ import sys
 import tweepy
 import utils
 import random
+from datetime import datetime
 
 if not len(sys.argv) == 3 or sys.argv[2][0] != "@":
     print("Usage: python3 " + sys.argv[0] + " authfile.txt @username")
@@ -30,9 +31,11 @@ listener.setAccountName(accountname)
 stream = tweepy.Stream(auth, listener)
 
 # this is blocking and starts the actual listening
-stream.filter(track=[sys.argv[2]])
+#stream.filter(track=[sys.argv[2]])
 
 # TODO: handle read timeouts exception when connection breaks(?)
 # google fu: read timeout tweepy
+
+print(utils.extractkeywords("Puppers and cats are very cute!"))
 
 print("Done")
