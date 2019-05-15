@@ -1,33 +1,30 @@
 import utils
 
-keywords = utils.getkeywords()
-allwords = []
+utils.KEYWORDS_FILE = "test_keywords.json"
 
-#for keys, value in keywords.items():
-#    for tag in value:
-#        if tag not in allwords:
-#            allwords.append(tag)
+wrd = utils.scrubmessage("Puppers and cats are very cute!")
+assert wrd == ["puppers", "and", "cats", "are", "very", "cute"]\
+    , 'should be ["puppers", "and", "cats", "are",'\
+    + '"very", "cute"]'
 
-#print(keywords)
+msg = "@wasdmurai Can I have a dog?"
+msg = utils.keywordsinmessage(msg)
+assert msg == ["dog"], 'keywordsinmessage broken'
 
-
-#wrd = utils.scrubmessage("Puppers and cats are very cute!")
-#print(wrd)
-
-msg = "@wasdmurai Can I have a corgi?"
-print(utils.keywordsinmessage(msg))
-
-
-
-
-print(utils.scrubmessage(msg))
-
-
-# TODO: make these into real tests
-"""
 images = utils.loadjsonfile(utils.KEYWORDS_FILE)
-chosen = "gecko"
+chosen = "raccoon"
 
 filtered = [k for k,v in images.items() if chosen in v]
-print(filtered)
-"""
+
+assert filtered == ["images/jOWWHiT.jpg"]\
+    , 'loadjsonfile broken'
+
+allwords = utils.getkeywords()
+res = True
+
+for elem in ["dog", "snek", "raccoon"]:
+    if elem not in allwords:
+        res = False
+        
+assert res == True, 'getkeywords broken'
+
