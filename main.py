@@ -31,11 +31,9 @@ listener.setAccountName(accountname)
 stream = tweepy.Stream(auth, listener)
 
 # this is blocking and starts the actual listening
-#stream.filter(track=[sys.argv[2]])
+stream.filter(track=[sys.argv[2]])
 
 # TODO: handle read timeouts exception when connection breaks(?)
 # google fu: read timeout tweepy
-
-print(utils.extractkeywords("Puppers and cats are very cute!"))
 
 print("Done")

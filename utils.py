@@ -32,14 +32,33 @@ def scrubmessage(message):
     # strip out all non alphabetical characters and spaces
     message = re.sub('[^A-Za-z ]', '', message)
 
-    # make it lowercase
     message = message.lower()
-
-    # split into words
     message = message.split(" ")
+    
     return message    
 
-def extractkeywords(message):
+def loadjsonfile(path):
+
+    tags = ""
+    try:
+        with open(path, "r", encoding="utf-8") as file:
+            for line in file:
+                tags += line[:-1]
+    except OSError:
+        print("Error opening file " + path)
+        return None
+    try:
+        # make it a dict
+        tags = json.loads(tags)
+    except:
+        print("Broken JSON in " + KEYWORDS_FILE)
+        return None
+
+    return tags
+
+# find keywords in the received message
+def keywordsinmessage(message):
+    
     keywords = getkeywords(); found = []
     message = scrubmessage(message)
 
@@ -47,34 +66,19 @@ def extractkeywords(message):
         if word in keywords:
             found.append(word)
 
-        # also check for the singular version of the word (pups -> pup)
+        # simple singular form check (pups -> pup)
         elif word[:-1] in keywords:
             found.append(word[:-1])
-
     return found
 
 # reads from a file since dbless branch, JSON formatted
 def getkeywords():
-    ret = ""
 
-    try:
-        with open(KEYWORDS_FILE, "r", encoding="utf-8") as file:
-            for line in file:
-                ret += line[:-1]
-    except OSError as wrongfile:
-        print("Error opening file " + KEYWORDS_FILE)
-        return None
-
-    try:
-        # make it a pythonised list
-        ret = json.loads(ret)
-    except:
-        print("Broken JSON in " + KEYWORDS_FILE)
-        return None
+    tags = loadjsonfile(KEYWORDS_FILE)
 
     # the values are the keywords
     allwords = []
-    for keys, value in ret.items():
+    for keys, value in tags.items():
         for tag in value:
             if tag not in allwords:
                 allwords.append(tag)
@@ -94,22 +98,33 @@ class StreamListener(tweepy.StreamListener):
         
     def on_data(self, data):
         data = json.loads(data)
-        
-        img = os.listdir("./images")        
-        img = "./images/" + img[random.randint(0, len(img))]
 
-        """" TODO
-        message = "@" + data["user"]["screen_name"] \
-            + " Have a random animal! Beep " \
-            + str(random.randint(1e6, 2e6))
+        # you don't strictly need to @ a user to reply
+        message = "@" + data["user"]["screen_name"] + " "
+        
+        
+        # get keywords that are mentioned in the tweet
+        keywords = keywordsinmessage(data["text"])
+
+        images = loadjsonfile(KEYWORDS_FILE)
+        
+        # if no keywords were mentioned just pick among all keywords
+        if (keywords == None or keywords == []):
+            message += "Have a random animal!"
+
+        # if one or more pick a random one of those
+        else:
+            chosen = random.choice(keywords)
+            message += "Have a " + chosen + "!"
+
+            # create a list where only images tagged with the chosen
+            # keywords are included
+            images = [k for k,v in images.items() if chosen in v]
+            
+
+        message += " Beep " + str(random.randint(1e6, 2e6))
+        img = random.choice(list(images))
         replyid = data["id_str"]
-        """
-
-        keywords = getkeywords(data["text"])
-
-        if (keywords != None or keywords != []):
-            pass #TODO
-        
         
         # replying to ourselves causes an infinite posting loop
         # this will get you banned from twitter
@@ -133,5 +148,5 @@ class StreamListener(tweepy.StreamListener):
             time.sleep(SLEEP_TIME_SERVERS)
 
         else:
-            print("Error: %s", status)
+            print("Error: ", status)
             quit()
