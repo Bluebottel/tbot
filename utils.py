@@ -88,13 +88,16 @@ def getkeywords():
 
 class StreamListener(tweepy.StreamListener):
 
-    api = None; accountname = None;
+    api = None; accountname = None; stream = None
     
     def setApi(self, api):
         self.api = api
 
     def setAccountName(self, name):
         self.accountname = name
+
+    def setStream(self, stream):
+        self.stream = stream
         
     def on_data(self, data):
         data = json.loads(data)
@@ -136,6 +139,7 @@ class StreamListener(tweepy.StreamListener):
         # unauthorized error
         if status == 401:
             print("Error 401 (unauthorized). Possibly broken keys")
+            stop_stream(self.stream)
             quit()
 
         # getting rate limited so pause posting

@@ -5,7 +5,10 @@ import sys
 import tweepy
 import utils
 import random
+from time import sleep
 from datetime import datetime
+
+TIME_RETRY_CONNECT = 5
 
 if not len(sys.argv) == 3 or sys.argv[2][0] != "@":
     print("Usage: python3 " + sys.argv[0] + " authfile.txt @username")
@@ -29,9 +32,20 @@ listener.setApi(api)
 listener.setAccountName(accountname)
 
 stream = tweepy.Stream(auth, listener)
+listener.setStream = stream
 
-# this is blocking and starts the actual listening
-stream.filter(track=[sys.argv[2]])
+while True:
+    try:
+        # this is blocking and starts the actual listening
+        stream.filter(track=[sys.argv[2]])
+    except KeyboardInterrupt:
+        print("Manual stop")
+        break
+    except e:
+        print(e, ": Restarting")
+        
+    sleep(TIME_RETRY_CONNECT)
+    
 
 # TODO: handle read timeouts exception when connection breaks(?)
 # google fu: read timeout tweepy
