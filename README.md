@@ -7,15 +7,13 @@ streaming API and trigger the on_data event when it gets a mention.
 Tweepy - https://github.com/tweepy/tweepy
 
 *Usage*
+
 main authfile @username
 
 The authfile should contain the twitter API keys in the following order:
 consumer_key
-
 consumer_token
-
 access_token
-
 access_token_secret
 
 They are generated on your twitter dashboard > apps > your_app > keys and tokens. The @username can
