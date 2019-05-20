@@ -46,8 +46,4 @@ while True:
         
     sleep(TIME_RETRY_CONNECT)
     
-
-# TODO: handle read timeouts exception when connection breaks(?)
-# google fu: read timeout tweepy
-
 print("Done")
