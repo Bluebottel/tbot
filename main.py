@@ -8,10 +8,19 @@ import random
 from time import sleep
 from datetime import datetime
 
-TIME_RETRY_CONNECT = 5
+TIME_RETRY_CONNECT = 30
+IMAGES_FOLDER = "images"
 
 if not len(sys.argv) == 3 or sys.argv[2][0] != "@":
     print("Usage: python3 " + sys.argv[0] + " authfile.txt @username")
+    quit()
+
+if not os.path.isdir(IMAGES_FOLDER):
+    print(f"No /{IMAGES_FOLDER} folder found, exiting")
+    quit()
+
+if len(os.listdir('./' + IMAGES_FOLDER)) == 0:
+    print(f"/{IMAGES_FOLDER} is empty, exiting")
     quit()
 
 print("Beep! Twitterbot started.")
@@ -41,9 +50,10 @@ while True:
     except KeyboardInterrupt:
         print("Manual stop")
         break
-    except e:
-        print(e, ": Restarting")
+    except Exception as e:
+        print(e, " restarting")
         
+    print("Disconnected, restarting")
     sleep(TIME_RETRY_CONNECT)
     
 print("Done")

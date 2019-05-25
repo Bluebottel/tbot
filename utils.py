@@ -153,4 +153,3 @@ class StreamListener(tweepy.StreamListener):
 
         else:
             print("Error: ", status)
-            quit()
