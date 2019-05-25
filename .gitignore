@@ -4,3 +4,4 @@ __*
 images/**
 images/
 authkeys
+*.pyc
