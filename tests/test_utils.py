@@ -2,7 +2,15 @@ import unittest
 import mock
 import utils
 
-utils.KEYWORDS_FILE = "test_keywords.json"
+JSONSTRING = '{\n"images/!!!!beagle snek.jpg": ["dog", "snek"],\n'\
+    + '"images/jOWWHiT.jpg": ["raccoon"]\n}\n'
+JSONDATA = { "images/!!!!beagle snek.jpg": ["dog", "snek"],
+             "images/jOWWHiT.jpg": ["raccoon"] }
+
+# make sure that this contains all values in JSONDATA
+KEYWORDS = ["dog", "snek", "raccoon"]
+
+
 
 class ScrubmessageTest(unittest.TestCase):
     def scrub_test(self):
@@ -22,33 +30,25 @@ class KeywordsinmessageTest(unittest.TestCase):
         
         assert msg == ["dog"], 'keywordsinmessage broken'
 
+class LoadjsonfileTest(unittest.TestCase):
 
+    def test_loadjsonfile(_):
+        with mock.patch("builtins.open", mock.mock_open(read_data=JSONSTRING)):
+            ret = utils.loadjsonfile("fakefile.json")
+            assert ret == JSONDATA, "readjsonfile broken"
+            
 
-case1 = ScrubmessageTest()
-case2 = KeywordsinmessageTest()
+class GetkeywordsTest(unittest.TestCase):
 
-case1.scrub_test()
-case2.test_keywordsinmessage()
+    @mock.patch("utils.loadjsonfile")
+    def test_getkeywords(_, mock_loadjsonfile):
+        mock_loadjsonfile.return_value = JSONDATA
+        keywords = utils.getkeywords()
 
-"""
-images = utils.loadjsonfile(utils.KEYWORDS_FILE)
-chosen = "raccoon"
+        res = True
 
-filtered = [k for k,v in images.items() if chosen in v]
-
-assert filtered == ["images/jOWWHiT.jpg"]\
-    , 'loadjsonfile broken'
-
-allwords = utils.getkeywords()
-res = True
-
-for elem in ["dog", "snek", "raccoon"]:
-    if elem not in allwords:
-        res = False
-        
-assert res == True, 'getkeywords broken'
-
-"""
-
-
-print("All tests passed")
+        for word in KEYWORDS:
+            if word not in keywords:
+                res = False
+                
+        assert res == True, 'getkeywords broken'

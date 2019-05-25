@@ -43,15 +43,15 @@ def loadjsonfile(path):
     try:
         with open(path, "r", encoding="utf-8") as file:
             for line in file:
-                tags += line[:-1]
+                tags += line
     except OSError:
-        print("Error opening file " + path)
+        print("Error opening file ", path)
         return None
     try:
         # make it a dict
         tags = json.loads(tags)
     except:
-        print("Broken JSON in " + KEYWORDS_FILE)
+        print("Broken JSON in " + path)
         return None
 
     return tags
