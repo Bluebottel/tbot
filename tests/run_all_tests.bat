@@ -1,3 +1,3 @@
 @echo off
 cd ..
-python -m unittest tests.test_utils
+python -m unittest discover -s tests/ -v

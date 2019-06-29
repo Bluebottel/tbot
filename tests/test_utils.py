@@ -14,7 +14,7 @@ KEYWORDS = ["dog", "snek", "raccoon"]
 
 class ScrubmessageTest(unittest.TestCase):
     def scrub_test(self):
-        wrd = utils.scrubmessage("Puppers and cats are very cute!")
+        wrd = utils.scrubmessage("Puppers123 and__ cats# a%re very cute!")
         assert wrd == ["puppers", "and", "cats", "are", "very", "cute"]\
             , 'should be ["puppers", "and", "cats", "are",'\
             + '"very", "cute"]'
@@ -53,3 +53,7 @@ class GetkeywordsTest(unittest.TestCase):
                 
         assert res == True, 'getkeywords broken'
 
+
+if __name__ == '__main__':
+    unittest.main()
+            
