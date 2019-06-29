@@ -43,6 +43,7 @@ listener.setAccountName(accountname)
 stream = tweepy.Stream(auth, listener)
 listener.setStream = stream
 
+
 while True:
     try:
         # this is blocking and starts the actual listening
