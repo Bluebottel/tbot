@@ -21,6 +21,9 @@ access_token_secret\
 They are generated on your twitter dashboard > apps > your_app > keys and tokens. The @username can
 anything really as long as it's accepted by the twitter API as a valid search request.
 
-Note that twitter doesn't really like bots doing whatever they want in general so many replies will
+Troubleshooting
+---------------
+
+Twitter doesn't really like bots doing whatever they want in general so many replies will
 go missing for no apparent reason. It helps if the mentioner is following you and, if that also fails,
 persistence.
