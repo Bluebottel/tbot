@@ -1,19 +1,22 @@
 A twitter bot that replies with contextually appropiate images. It will establish a connection to the twitter
 streaming API and trigger the on_data event when it gets a mention.
 
-*Dependencies*
+Dependencies
+------------
 
 Tweepy - https://github.com/tweepy/tweepy
 
-*Usage*
 
-main authfile @username
+Usage
+-----
+
+`main authfile @username`
 
 The authfile should contain the twitter API keys in the following order:
-consumer_key
-consumer_token
-access_token
-access_token_secret
+consumer_key\
+consumer_token\
+access_token\
+access_token_secret\
 
 They are generated on your twitter dashboard > apps > your_app > keys and tokens. The @username can
 anything really as long as it's accepted by the twitter API as a valid search request.
