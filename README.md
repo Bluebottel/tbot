@@ -1,6 +1,5 @@
-# tbot
-A twitter bot that replies with pictures of cute animals. It will establish a connection to the twitter
-streaming API and trigger the on_data event when it gets a mention. 
+A twitter bot that replies with contextually appropiate images. It will establish a connection to the twitter
+streaming API and trigger the on_data event when it gets a mention.
 
 *Dependencies*
 
